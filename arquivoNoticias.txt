@@ -1,0 +1,36 @@
+var NoticiasDAO = require('../models/NoticiasDAO');
+
+module.exports=function(app){
+
+app.get('/noticias', function(req,res){ 
+	
+		var connection = app.config.dbConnection();
+		//depois do refactoring, recebemos o app por parametro, então é somente
+		//recuperar o módulo dentro do app
+
+
+		var noticiasModel= new NoticiasDAO(connection);
+		noticiasModel.getNoticias(connection, function(error,result){ //esse é o um código sql -- regra de negócio
+			if (error){
+				console.log(error);
+			}
+		res.render('noticias/noticias.ejs',{noticias:result});	
+		})
+		
+});
+app.get('/noticia', function(req,res){ //get 
+		var connection = app.config.dbConnection();//conexão com o banco de dados 
+
+		var noticiasModel=new NoticiasDAO(connection);
+
+		noticiasModel.getNoticia(connection, function(error,result){
+			if (error){
+				console.log(error);
+			}
+		res.render('noticias/noticia.ejs',{noticia:result}); //res = resposta
+		});
+	});
+};
+//where = onde 
+//select * = selecionar tudo no banco de dados
+//só vai ter um arquivo model, porque só tem uma tabela
